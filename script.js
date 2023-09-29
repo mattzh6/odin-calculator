@@ -42,7 +42,7 @@ function operate(operator, num1, num2) {
             break;
     }
 
-    
+    return result;
 }
 
 function addNum(event) {
@@ -69,13 +69,47 @@ function addNum(event) {
     }
 }
 
-function clearDisplay(event) {
+function clearDisplay() {
     const display = document.querySelector(".display");
     display.innerText = "";
-    firstNum = "";
+    firstNum = "0";
     secondNum = "";
     operatorUsed = false;
     decimalPointUsed = false;
+}
+
+function useOperator(event) {
+
+    let currOperator = event.target.value;
+    
+    if (!operatorUsed && currOperator !== "=") {
+        operatorUsed = true;
+        operator = currOperator;
+    }
+    
+    
+    if (operatorUsed && secondNum) {
+        const result = operate(operator, parseInt(firstNum), parseInt(secondNum));
+        const display = document.querySelector(".display");
+        if (result === "ERROR") {
+            display.innerText = "Don't divide by 0";
+            firstNum = "";
+            secondNum = "";
+            operatorUsed = false;
+            decimalPointUsed = false;
+        }
+        else {
+            display.innerText = result;
+            firstNum = result;
+            operatorUsed = false;
+            operator = "";
+            secondNum = "";
+            decimalPointUsed = false;
+        }
+
+    }
+    
+    
 }
 
 const numbersListener = document.querySelectorAll(".number");
@@ -83,3 +117,8 @@ numbersListener.forEach(button => button.addEventListener("click", addNum));
 
 const clearListener = document.querySelector(".clear");
 clearListener.addEventListener("click", clearDisplay);
+
+const operatorListener = document.querySelectorAll(".operator");
+operatorListener.forEach(button => button.addEventListener("click", useOperator));
+
+
